@@ -8,7 +8,7 @@ insert_final_newline = true
 indent_style = tab
 indent_size = 2
 
-[*.{yml,md,sh}]
+[*.{yml,yaml,md,sh}]
 indent_size = 4
 
 [{package.json,*.yml}]

@@ -2,12 +2,12 @@ version: "3.2"
 
 services:
     tripsit_ircd:
-        build: .
-        # ports:
-        #     - 6667:6667/tcp
-        #     - 6697:6697/tcp
-        # volumes:
-        #     - data:/ircd
+        image: oragono/oragono:v2.5.1
+        ports:
+            - 6667:6667/tcp
+            - 6697:6697/tcp
+        volumes:
+            - tripsit_ircd_data:/ircd
         deploy:
             placement:
                 constraints:
@@ -17,4 +17,4 @@ services:
             replicas: 1
 
 volumes:
-    tripsit_ircd:
+    tripsit_ircd_data:
