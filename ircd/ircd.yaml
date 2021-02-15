@@ -36,145 +36,50 @@ server:
         throttle-duration: 10m
         max-connections-per-duration: 0
 
-    # strict transport security, to get clients to automagically use TLS
     sts:
-        # whether to advertise STS
-        #
-        # to stop advertising STS, leave this enabled and set 'duration' below to "0". this will
-        # advertise to connecting users that the STS policy they have saved is no longer valid
         enabled: false
-
-        # how long clients should be forced to use TLS for.
-        # setting this to a too-long time will mean bad things if you later remove your TLS.
-        # the default duration below is 1 month, 2 days and 5 minutes.
         duration: 1mo2d5m
-
-        # tls port - you should be listening on this port above
         port: 6697
-
-        # should clients include this STS policy when they ship their inbuilt preload lists?
         preload: false
 
     websockets:
-        # Restrict the origin of WebSocket connections by matching the "Origin" HTTP
-        # header. This setting causes oragono to reject websocket connections unless
-        # they originate from a page on one of the whitelisted websites in this list.
-        # This prevents malicious websites from making their visitors connect to your
-        # oragono instance without their knowledge. An empty list means there are no
-        # restrictions.
         allowed-origins:
-            # - "https://oragono.io"
-            # - "https://*.oragono.io"
+			- "local.chat.tripsit.me"
 
-    # casemapping controls what kinds of strings are permitted as identifiers (nicknames,
-    # channel names, account names, etc.), and how they are normalized for case.
-    # with the recommended default of 'precis', UTF8 identifiers that are "sane"
-    # (according to RFC 8265) are allowed, and the server additionally tries to protect
-    # against confusable characters ("homoglyph attacks").
-    # the other options are 'ascii' (traditional ASCII-only identifiers), and 'permissive',
-    # which allows identifiers to contain unusual characters like emoji, but makes users
-    # vulnerable to homoglyph attacks. unless you're really confident in your decision,
-    # we recommend leaving this value at its default (changing it once the network is
-    # already up and running is problematic).
     casemapping: "precis"
-
-    # enforce-utf8 controls whether the server will preemptively discard non-UTF8
-    # messages (since they cannot be relayed to websocket clients), or will allow
-    # them and relay them to non-websocket clients (as in traditional IRC).
     enforce-utf8: true
-
-    # whether to look up user hostnames with reverse DNS. there are 3 possibilities:
-    # 1. lookup-hostnames enabled, IP cloaking disabled; users will see each other's hostnames
-    # 2. lookup-hostnames disabled, IP cloaking disabled; users will see each other's numeric IPs
-    # 3. [the default] IP cloaking enabled; users will see cloaked hostnames
-    lookup-hostnames: false
-    # whether to confirm hostname lookups using "forward-confirmed reverse DNS", i.e., for
-    # any hostname returned from reverse DNS, resolve it back to an IP address and reject it
-    # unless it matches the connecting IP
+    lookup-hostnames: true
     forward-confirm-hostnames: true
-
-    # use ident protocol to get usernames
     check-ident: false
-
-    # ignore the supplied user/ident string from the USER command, always setting user/ident
-    # to the following literal value; this can potentially reduce confusion and simplify bans.
-    # the value must begin with a '~' character. comment out / omit to disable:
     coerce-ident: '~u'
-
-    # password to login to the server
-    # generated using  "oragono genpasswd"
-    #password: ""
-
-    # motd filename
-    # if you change the motd, you should move it to ircd.motd
-    motd: oragono.motd
-
-    # motd formatting codes
-    # if this is true, the motd is escaped using formatting codes like $c, $b, and $i
+    motd: tripsit.motd
     motd-formatting: true
 
-    # relaying using the RELAYMSG command
     relaymsg:
-        # is relaymsg enabled at all?
         enabled: true
-
-        # which character(s) are reserved for relayed nicks?
         separators: "/"
-
-        # can channel operators use RELAYMSG in their channels?
-        # our implementation of RELAYMSG makes it safe for chanops to use without the
-        # possibility of real users being silently spoofed
         available-to-chanops: true
 
-    # IPs/CIDRs the PROXY command can be used from
-    # This should be restricted to localhost (127.0.0.1/8, ::1/128, and unix sockets).
-    # Unless you have a good reason. you should also add these addresses to the
-    # connection limits and throttling exemption lists.
     proxy-allowed-from:
         - localhost
         # - "192.168.1.1"
         # - "192.168.10.1/24"
 
-    # controls the use of the WEBIRC command (by IRC<->web interfaces, bouncers and similar)
     webirc:
-        # one webirc block -- should correspond to one set of gateways
         -
-            # SHA-256 fingerprint of the TLS certificate the gateway must use to connect
-            # (comment this out to use passwords only)
-            certfp: "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789"
-
-            # password the gateway uses to connect, made with oragono genpasswd
-            password: "$2a$04$abcdef0123456789abcdef0123456789abcdef0123456789abcde"
-
-            # IPs/CIDRs that can use this webirc command
-            # you should also add these addresses to the connection limits and throttling exemption lists
+            certfp: "abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789" # TODO: Move this into .env file
+            password: "$2a$04$abcdef0123456789abcdef0123456789abcdef0123456789abcde" # TODO: Move this into .env file
             hosts:
                 - localhost
                 # - "192.168.1.1"
                 # - "192.168.10.1/24"
 
-    # allow use of the RESUME extension over plaintext connections:
-    # do not enable this unless the ircd is only accessible over internal networks
     allow-plaintext-resume: false
-
-    # maximum length of clients' sendQ in bytes
-    # this should be big enough to hold bursts of channel/direct messages
     max-sendq: 96k
 
-    # compatibility with legacy clients
     compatibility:
-        # many clients require that the final parameter of certain messages be an
-        # RFC1459 trailing parameter, i.e., prefixed with :, whether or not this is
-        # actually required. this forces Oragono to send those parameters
-        # as trailings. this is recommended unless you're testing clients for conformance;
-        # defaults to true when unset for that reason.
         force-trailing: true
-
-        # some clients (ZNC 1.6.x and lower, Pidgin 2.12 and lower) do not
-        # respond correctly to SASL messages with the server name as a prefix:
-        # https://github.com/znc/znc/issues/1212
-        # this works around that bug, allowing them to use SASL.
-        send-unprefixed-sasl: true
+        send-unprefixed-sasl: false
 
     # IP-based DoS protection
     ip-limits:
