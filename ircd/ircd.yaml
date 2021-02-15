@@ -1,64 +1,18 @@
-# This is the default config file for Oragono.
-# It contains recommended defaults for all settings, including some behaviors
-# that differ from conventional ircd+services setups. See traditional.yaml
-# for a config with more "mainstream" behavior.
-#
-# If you are setting up a new oragono server, you should copy this file
-# to a new one named 'ircd.yaml', then read the whole file to see which
-# settings you want to customize. If you don't understand a setting, or
-# aren't sure what behavior you want, most of the defaults are fine
-# to start with (you can change them later, even on a running server).
-# However, there are a few that you should probably change up front:
-# 1. network.name (a human-readable name that identifies your network,
-#    no spaces or special characters) and server.name (consider using the
-#    domain name of your server)
-# 2. if you have valid TLS certificates (for example, from letsencrypt.org),
-#    you should enable them in server.listeners in place of the default
-#    self-signed certificates
-# 3. the operator password in the 'opers' section
-# 4. by default, message history is enabled, using in-memory history storage
-#    and with messages expiring after 7 days. depending on your needs, you may
-#    want to disable history entirely, remove the expiration time, switch to
-#    persistent history stored in MySQL, or do something else entirely. See
-#    the 'history' section of the config.
-
-# network configuration
 network:
-    # name of the network
-    name: OragonoTest
+    name: TripSit
 
-# server configuration
 server:
-    # server name
-    name: oragono.test
+    name: local.irc.tripsit.me
 
-    # addresses to listen on
+	# Require TLS with the exclusion of localhost
     listeners:
-        # The standard plaintext port for IRC is 6667. Allowing plaintext over the
-        # public Internet poses serious security and privacy issues. Accordingly,
-        # we recommend using plaintext only on local (loopback) interfaces:
         "127.0.0.1:6667": # (loopback ipv4, localhost-only)
         "[::1]:6667":     # (loopback ipv6, localhost-only)
-        # If you need to serve plaintext on public interfaces, comment out the above
-        # two lines and uncomment the line below (which listens on all interfaces):
-        # ":6667":
-        # Alternately, if you have a TLS certificate issued by a recognized CA,
-        # you can configure port 6667 as an STS-only listener that only serves
-        # "redirects" to the TLS port, but doesn't allow chat. See the manual
-        # for details.
-
-        # The standard SSL/TLS port for IRC is 6697. This will listen on all interfaces:
         ":6697":
             tls:
                 cert: fullchain.pem
                 key: privkey.pem
-            # 'proxy' should typically be false. It's for cloud load balancers that
-            # always send a PROXY protocol header ahead of the connection. See the
-            # manual ("Reverse proxies") for more details.
             proxy: false
-
-        # Example of a Unix domain socket for proxying:
-        # "/tmp/oragono_sock":
 
         # Example of a Tor listener: any connection that comes in on this listener will
         # be considered a Tor connection. It is strongly recommended that this listener
@@ -73,27 +27,14 @@ server:
         #         cert: fullchain.pem
         #         key: privkey.pem
 
-    # sets the permissions for Unix listen sockets. on a typical Linux system,
-    # the default is 0775 or 0755, which prevents other users/groups from connecting
-    # to the socket. With 0777, it behaves like a normal TCP socket
-    # where anyone can connect.
     unix-bind-mode: 0777
 
-    # configure the behavior of Tor listeners (ignored if you didn't enable any):
     tor-listeners:
-        # if this is true, connections from Tor must authenticate with SASL
-        require-sasl: false
-
-        # what hostname should be displayed for Tor connections?
+        require-sasl: true
         vhost: "tor-network.onion"
-
-        # allow at most this many connections at once (0 for no limit):
-        max-connections: 64
-
-        # connection throttling (limit how many connection attempts are allowed at once):
+        max-connections: 0
         throttle-duration: 10m
-        # set to 0 to disable throttling:
-        max-connections-per-duration: 64
+        max-connections-per-duration: 0
 
     # strict transport security, to get clients to automagically use TLS
     sts:
