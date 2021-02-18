@@ -420,7 +420,7 @@ accounts:
 
     # enable login to accounts via the PASS command, e.g., PASS account:password
     # this is useful for compatibility with old clients that don't support SASL
-    login-via-pass-command: false
+    login-via-pass-command: true
 
     # require-sasl controls whether clients are required to have accounts
     # (and sign into them using SASL) to connect to the server
