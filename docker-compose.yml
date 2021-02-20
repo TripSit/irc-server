@@ -1,20 +1,15 @@
 version: "3.2"
 
 services:
-    tripsit_ircd:
-        build: .
+    oragono:
+        image: oragono/oragono:latest
+        container_name: tripsit_irc_server
+        restart: always
         ports:
-            - 6667:6667/tcp
-            - 6697:6697/tcp
+            - "6667:6667/tcp"
+            - "6697:6697/tcp"
         volumes:
-            - tripsit_ircd_data:/ircd
-        deploy:
-            placement:
-                constraints:
-                    - "node.role == manager"
-            restart_policy:
-                condition: on-failure
-            replicas: 1
+            - tripsit_irc_server_data:/ircd
 
 volumes:
-    tripsit_ircd_data:
+    tripsit_irc_server_data:

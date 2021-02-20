@@ -4,12 +4,14 @@
 cd /ircd
 
 # Make volume if it does not exist
-if [ -z "$(docker volume ls -qf name=tripsit_irc_server)" ]; then
-	docker volume create tripsit_irc_server
+if [ -z "$(docker volume ls -qf name=tripsit_irc_server_data)" ]; then
+	docker volume create tripsit_irc_server_data
 fi
 
 # Make config file
+echo "NOPE"
 if [ ! -f /ircd/ircd.yaml ]; then
+	echo "AYYO"
 	awk '{gsub(/path: languages/,"path: /ircd-bin/languages")}1' \
 		/ircd-bin/default.yaml > "${CONFIG_PATH}"
 
