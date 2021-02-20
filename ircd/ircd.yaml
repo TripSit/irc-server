@@ -580,34 +580,34 @@ channels:
 oper-classes:
     # chat moderator: can ban/unban users from the server, join channels,
     # fix mode issues and sort out vhosts.
-    "chat-moderator":
+    "moderator":
         # title shown in WHOIS
-        title: Chat Moderator
+        title: TripSit Moderator
 
         # capability names
         capabilities:
             - "kill"
             - "ban"
             - "nofakelag"
-            - "roleplay"
-            - "relaymsg"
-            - "vhosts"
+            # - "roleplay"
             - "sajoin"
             - "samode"
             - "snomasks"
 
     # server admin: has full control of the ircd, including nickname and
     # channel registrations
-    "server-admin":
+    "operator":
         # title shown in WHOIS
-        title: Server Admin
+        title: TripSit Operator
 
         # oper class this extends from
-        extends: "chat-moderator"
+        extends: "moderator"
 
         # capability names
         capabilities:
             - "rehash"
+            - "vhosts"
+            - "relaymsg"
             - "accreg"
             - "chanreg"
             - "history"
@@ -616,15 +616,15 @@ oper-classes:
 # ircd operators
 opers:
     # default operator named 'admin'; log in with /OPER admin <password>
-    admin:
+    admin1:
         # which capabilities this oper has access to
-        class: "server-admin"
+        class: "operator"
 
         # custom whois line
-        whois-line: is the server administrator
+        whois-line: is a TripSit Operator
 
         # custom hostname
-        vhost: "staff"
+        vhost: "tripsit.operator"
 
         # normally, operator status is visible to unprivileged users in WHO and WHOIS
         # responses. this can be disabled with 'hidden'. ('hidden' also causes the
@@ -634,12 +634,13 @@ opers:
         # modes are modes to auto-set upon opering-up. uncomment this to automatically
         # enable snomasks ("server notification masks" that alert you to server events;
         # see `/quote help snomasks` while opered-up for more information):
-        #modes: +is acjknoqtuxv
+        modes: +is acjknoqtuxv
 
         # operators can be authenticated either by password (with the /OPER command),
         # or by certificate fingerprint, or both. if a password hash is set, then a
         # password is required to oper up (e.g., /OPER dan mypassword). to generate
         # the hash, use `oragono genpasswd`.
+        # CHANGE
         password: "$2a$04$0123456789abcdef0123456789abcdef0123456789abcdef01234"
 
         # if a SHA-256 certificate fingerprint is configured here, then it will be
@@ -650,12 +651,41 @@ opers:
         # granted automatically as soon as you connect with the right fingerprint.
         #auto: true
 
+    admin2:
+        class: "operator"
+
+        whois-line: is a TripSit Operator
+
+        vhost: "tripsit.operator"
+
+        hidden: false
+
+        modes: +is acjknoqtuxv
+
+        # CHANGE
+        password: "$2a$04$0123456789abcdef0123456789abcdef0123456789abcdef01234"
+
     # example of a moderator named 'alice'
-    # (log in with /OPER alice <password>):
-    #alice:
-    #    class: "chat-moderator"
-    #    whois-line: "can help with moderation issues!"
-    #    password: "$2a$04$0123456789abcdef0123456789abcdef0123456789abcdef01234"
+    # (log in with /OPER mod1 <password>):
+    mod1:
+       class: "moderator"
+       whois-line: "is a TripSit Moderator"
+       # CHANGE
+       password: "$2a$04$0123456789abcdef0123456789abcdef0123456789abcdef01234"
+       vhost: "tripsit.moderator"
+       modes: +is acjknoqtuxv
+       hidden: false
+
+    mod2:
+       class: "moderator"
+       whois-line: "is a TripSit Moderator"
+       # CHANGE
+       password: "$2a$04$0123456789abcdef0123456789abcdef0123456789abcdef01234"
+       vhost: "tripsit.moderator"
+       modes: +is acjknoqtuxv
+       hidden: false
+
+
 
 # logging, takes inspiration from Insp
 logging:
@@ -689,13 +719,13 @@ logging:
         type: "* -userinput -useroutput"
 
         # one of: debug info warn error
-        level: info
+        level: debug
     #-
     #   # example of a file log that avoids logging IP addresses
-    #   method: file
-    #   filename: ircd.log
-    #   type: "* -userinput -useroutput -connect-ip"
-    #   level: debug
+      method: file
+      filename: ircd.log
+      type: "* -userinput -useroutput"
+      level: debug
 
 # debug options
 debug:
