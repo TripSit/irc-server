@@ -1,3 +1,6 @@
+####
+# To-Do: Port values to new Ergo configuration template
+####
 # This is the default config file for Oragono.
 # It contains recommended defaults for all settings, including some behaviors
 # that differ from conventional ircd+services setups. See traditional.yaml

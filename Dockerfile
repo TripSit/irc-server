@@ -1,1 +1,1 @@
-FROM oragono/oragono:v2.5.1
+FROM ergochat/ergo:latest

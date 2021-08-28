@@ -16,7 +16,7 @@ if [ ! -f /ircd/ircd.yaml ]; then
 	# Change default oper passwd
 	OPERPASS=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c20)
 	echo "Oper username:password is admin: ${OPERPASS}"
-	ENCRYPTEDPASS=$(echo "${OPERPASS}" | /ircd-bin/oragono genpasswd)
+	ENCRYPTEDPASS=$(echo "${OPERPASS}" | /ircd-bin/ergo genpasswd)
 	ORIGINALPASS='\$2a\$04\$0123456789abcdef0123456789abcdef0123456789abcdef01234'
 
 	awk "{gsub(/password: \\\"${ORIGINALPASS}\\\"/,\"password: \\\"${ENCRYPTEDPASS}\\\"\")}1" \
@@ -30,7 +30,7 @@ if [ ! -f /ircd/ircd.yaml ]; then
 fi
 
 # Make self-signed certs if they don't already exist
-/ircd-bin/oragono mkcerts
+/ircd-bin/ergo mkcerts
 
 # Run daemon
-exec /ircd-bin/oragono run
+exec /ircd-bin/ergo run
